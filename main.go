@@ -11,7 +11,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -30,22 +29,27 @@ func main() {
     =========
 	`
 
-	randWords := []string{"Hunter", "Brook", "Love", "Party", "Dingleberries"}
+	randWords := []string{"Brook", "Dingleberries"}
 
 	randIndex := rand.Intn(len(randWords))
 
 	secretWord := randWords[randIndex]
 	fmt.Println(startGameASCII)
-	fmt.Println("Welcome to Hangman! Your only goal is to guess the random word that the computer has chosen!")
 	fmt.Println(secretWord)
 	var won bool = false
 	var letter string
 	var misses int = 0
 	var totalRight int = 0
+	var positions []int
+
+	fmt.Println("Welcome to Hangman! Your only goal is to guess the random word that the computer has chosen! The outline for your word is below:")
+	for range secretWord {
+		fmt.Print("__ ")
+	}
 
 	// Game Loop
 	for !won {
-		fmt.Println("Please take your guess now!")
+		fmt.Println("\nPlease take your guess now!")
 		fmt.Scanln(&letter)
 
 		if !strings.Contains(secretWord, letter) {
@@ -58,12 +62,20 @@ func main() {
 			wordLen := len(secretWord)
 			i := 0
 
-			for i < wordLen {
+			for range secretWord {
 				slice := secretWord[i:(i + 1)]
 				if slice != letter {
 					i += 1
+					positions = append(positions, i+1)
 				} else {
-					fmt.Printf("You are correct! The letter %s is in the %s spot\n", letter, strconv.Itoa(i+1))
+
+					fmt.Printf("The letter %s is in the positions", letter)
+					for i, pos := range positions {
+						if i > 0 {
+							fmt.Print(" and ")
+						}
+						fmt.Print(pos)
+					}
 					totalRight += 1
 
 					if totalRight == wordLen {
